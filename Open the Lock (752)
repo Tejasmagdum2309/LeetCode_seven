@@ -1,0 +1,66 @@
+class Solution {
+public:
+    eg. -> if s = '0000' and i = 1 
+           s = '0100' at 1 index we incremented 0 to 1
+
+    string increment(string s,int i){
+        s[i] =  s[i] == '9' ? '0' : s[i] + 1 ;
+        return s;
+    }
+
+    eg. -> if s = '0000' and i = 0 
+           s = '9000' at 0 index we decrement 0 to 9
+
+    string decrement(string s,int i){
+        s[i] =  s[i] == '0' ? '9' : s[i] - 1 ;
+        return s;
+    }
+    
+    int openLock(vector<string>& deadends, string target) {
+        // insert all deaed lock strings in set so we can check we visited it alredy or not
+        unordered_set<string> vis(deadends.begin(),deadends.end());
+
+        string src = "0000";
+
+        // when initial stage is target we return 0 right 
+        if(src == target) return 0;
+
+        // if initial stage i.e '0000' is present in set how can we even move forward 
+        if(vis.count(src)){
+            return -1;
+        }
+
+        // stores string i.e lock in string formate and int i.e to know how many steps we moved  
+        queue<pair<string,int>> qu;
+
+        qu.push({src,0});
+        vis.insert(src);
+
+        while(!qu.empty()){
+            string u = qu.front().first; 
+            int x = qu.front().second;
+            qu.pop();
+
+            // we need to check for every index one by one 
+            // eg. -> at start '0000' 
+                      it get converted to '1000','9000','0100','0900','0010',...... and so one....
+
+            for(int i = 0;i<4;i++){
+
+                // as u can see on line no. 46 example thats how below code will work
+
+                for(string o : {"inc","dec"}){
+                    string v = o == "inc" ? increment(u,i) : decrement(u,i) ;
+                    if(v == target) return x+1;
+                    
+                    if(!vis.count(v)){
+                       qu.push({v,x+1});
+                       vis.insert(v);
+                    }
+                }
+            }
+
+        }
+        return -1;
+    }
+};
