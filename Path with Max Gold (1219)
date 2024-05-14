@@ -1,0 +1,46 @@
+class Solution {
+public:
+    // Depth First Search Function
+    void dfs(int u, int v, vector<vector<int>>& grid, vector<vector<int>>& visit, int n, int m, int& maxGold, int gold) {
+        // Check if the current cell is out of grid, already visited, or if it's not a gold cell
+        if (u < 0 || v < 0 || u >= n || v >= m || visit[u][v] || grid[u][v] == 0) 
+            return;
+
+        // Mark the current cell as visited
+        visit[u][v] = 1;
+        // Calculate the total gold collected till this cell
+        int g = grid[u][v] + gold;
+
+        // Explore all four directions
+        dfs(u, v + 1, grid, visit, n, m, maxGold, g); // Right
+        dfs(u, v - 1, grid, visit, n, m, maxGold, g); // Left
+        dfs(u + 1, v, grid, visit, n, m, maxGold, g); // Down
+        dfs(u - 1, v, grid, visit, n, m, maxGold, g); // Up
+
+        // Update maxGold if the current path has more gold
+        maxGold = max(maxGold, g);
+
+        // Backtrack: Mark the current cell as unvisited
+        visit[u][v] = 0;
+    }
+
+    // Function to find the maximum amount of gold
+    int getMaximumGold(vector<vector<int>>& grid) {
+        int n = grid.size(), m = grid[0].size();
+        int maxGold = 0;
+        // Initialize a 2D array to keep track of visited cells
+        vector<vector<int>> visit(n, vector<int>(m, 0));
+
+        // Start DFS from each cell that has gold
+        for (int i = 0; i < n; i++) {
+            for (int j = 0; j < m; j++) {
+                if (grid[i][j] != 0) {
+                    // Call DFS for each cell that has gold
+                    dfs(i, j, grid, visit, n, m, maxGold, 0);
+                }
+            }
+        }
+        // Return the maximum amount of gold collected
+        return maxGold;
+    }
+};
