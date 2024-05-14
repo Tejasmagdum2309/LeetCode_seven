@@ -1,0 +1,40 @@
+void dfs(TreeNode* root, int& len1, int x) {
+    if (root == NULL) return; // If the current node is NULL, return
+    if (x <= root->val) { // If x is less than or equal to the value of the current node
+        if (x == root->val) return; // If x is equal to the value of the current node, return
+        len1++; // Increment the distance
+        dfs(root->left, len1, x); // Move to the left child
+    }
+    else { // If x is greater than the value of the current node
+        len1++; // Increment the distance
+        dfs(root->right, len1, x); // Move to the right child
+    }
+}
+
+int Solution::solve(TreeNode* A, int B, int C) {
+    if (B == C) return 0; // If B and C are the same, distance is 0
+    if ((A->val > B && A->val < C) || (A->val < B && A->val > C)) { // If A is the LCA of B and C
+        int l1 = 0, l2 = 0; // Initialize distances from A to B and C
+        dfs(A, l1, B); // Find distance from A to B
+        dfs(A, l2, C); // Find distance from A to C
+        return (l1 + l2); // Return sum of distances
+    }
+    else if (A->val >= B && A->val >= C) { // If A is greater than or equal to both B and C
+        if (A->val == B || A->val == C) { // If A is equal to either B or C
+            int l1 = 0, l2 = 0; // Initialize distances from A to B and C
+            dfs(A, l1, B); // Find distance from A to B
+            dfs(A, l2, C); // Find distance from A to C
+            return (l1 + l2); // Return sum of distances
+        }
+        return solve(A->left, B, C); // Otherwise, search in the left subtree
+    }
+    else { // If A is smaller than both B and C
+        if (A->val == B || A->val == C) { // If A is equal to either B or C
+            int l1 = 0, l2 = 0; // Initialize distances from A to B and C
+            dfs(A, l1, B); // Find distance from A to B
+            dfs(A, l2, C); // Find distance from A to C
+            return (l1 + l2); // Return sum of distances
+        }
+        return solve(A->right, B, C); // Otherwise, search in the right subtree
+    }
+}
